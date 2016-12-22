@@ -1,24 +1,24 @@
 {
-	"action": "blink",
-	"states": [
-		{
-			"color": {
+    "action": "blink",
+    "states": [
+        {
+            "color": {
                 "r": 100,
-    			"g": 80,
-    			"b": 80
+                "g": 80,
+                "b": 80
             },
             "steps": 1,
             "delay": 0.005
-		},
-		{
+        },
+        {
             "color": {
                 "r": 0,
-    			"g": 0,
-    			"b": 0
+                "g": 0,
+                "b": 0
             },
             "steps": 1,
             "delay": 0.01
-		}
-	],
+        }
+    ],
     "delay": 2
 }

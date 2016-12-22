@@ -1,6 +1,6 @@
 {
-	"action": "set",
-	"state": {
+    "action": "set",
+    "state": {
         "color": {
             "r": 100,
             "g": 80,
@@ -8,5 +8,5 @@
         },
         "steps": 1,
         "delay": 0.005
-	}
+    }
 }
