@@ -7,18 +7,19 @@ class LEDStrip:
         "led_pin": 12,
         "led_freq_hz": 800000,
         "led_dma": 5,
-        "led_brightness": 50,
         "led_invert": False,
     }
 
     initial_state = {
         "current": {
-            "color": {"r": 0, "g": 0, "b": 0}
+            "color": {"r": 0, "g": 0, "b": 0},
+            "brightness": 0
         },
         "wanted": {
              "color": {"r": 0, "g": 0, "b": 0},
              "delay": 0.005,
-             "steps" : 1,
+             "steps": 1,
+             "brightness": 50
         },
         "blink": {
             "states": [],
@@ -46,7 +47,7 @@ class LEDStrip:
             self.options["led_freq_hz"],
             self.options["led_dma"],
             self.options["led_invert"],
-            self.options["led_brightness"]
+            self.initial_state["wanted"]["brightness"],
             )
         self.strip.begin()
         self.state = self.initial_state.copy()
@@ -82,6 +83,7 @@ class LEDStrip:
             self.state["blink"]["current_index"] = 0
         self._set(self.state["blink"]["states"][self.state["blink"]["current_index"]])
 
+
     def _update(self):
         update_needed = False
         current = self.state["current"]
@@ -100,6 +102,18 @@ class LEDStrip:
                     if current["color"][c] < wanted["color"][c]:
                         current["color"][c] = wanted["color"][c]
 
+        if current["brightness"] != wanted["brightness"]:
+            # Update needed
+            update_needed = True
+            if current["brightness"] < wanted["brightness"]:
+                current["brightness"] = current["brightness"] + wanted["steps"]
+                if current["brightness"] > wanted["brightness"]:
+                    current["brightness"] = wanted["brightness"]
+            if current["brightness"] > wanted["brightness"]:
+                current["brightness"] = current["brightness"] - wanted["steps"]
+                if current["brightness"] < wanted["brightness"]:
+                    current["brightness"] = wanted["brightness"]
+
         if update_needed:
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColor(i, Color(
@@ -107,6 +121,7 @@ class LEDStrip:
                     current["color"]["g"],
                     current["color"]["b"]
                     ))
+            self.strip.setBrightness(current["brightness"])
             self.strip.show()
         else:
             self.timers["update"].stop()

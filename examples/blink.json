@@ -7,6 +7,7 @@
                 "g": 80,
                 "b": 80
             },
+            "brightness": 50,
             "steps": 1,
             "delay": 0.005
         },
@@ -16,6 +17,7 @@
                 "g": 0,
                 "b": 0
             },
+            "brightness": 50,
             "steps": 1,
             "delay": 0.01
         }
