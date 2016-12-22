@@ -52,16 +52,18 @@ class LEDStrip:
         self.state = self.initial_state.copy()
 
     def set(self, args = None):
-        self.state["blink"] = self.initial_state["blink"]
+        if (self.timers["blink"].is_running()):
+            self.timers["blink"].stop()
         self._set(args["state"])
         return True
 
     def blink(self, args = None):
+        if (self.timers["blink"].is_running()):
+            self.timers["blink"].stop()
         self.state["blink"] = self.initial_state["blink"].copy()
         self.state["blink"].update(args)
         self.timers["blink"].set_interval(self.state["blink"]["delay"])
-        if (not self.timers["blink"].is_running()):
-            self.timers["blink"].start()
+        self.timers["blink"].start()
         return True
 
     def _set(self, args):
