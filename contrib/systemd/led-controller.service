@@ -1,0 +1,10 @@
+[Unit]
+Description=LED strip controller
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python /opt/led/python-ws2812-controller/server.py
+
+[Install]
+WantedBy=multi-user.target
