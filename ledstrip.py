@@ -1,5 +1,6 @@
 from repeated_timer import RepeatedTimer
 from neopixel import Adafruit_NeoPixel, Color
+import pprint
 
 class LEDStrip:
     options = {
@@ -83,38 +84,40 @@ class LEDStrip:
             self.state["blink"]["current_index"] = 0
         self._set(self.state["blink"]["states"][self.state["blink"]["current_index"]])
 
+    def _transform(self, current, wanted, steps):
+        if current < wanted:
+            current = current + steps
+            if current > wanted:
+                current = wanted
+        if current > wanted:
+            current = current - steps
+            if current < wanted:
+                current = wanted
+        return current
+
 
     def _update(self):
         update_needed = False
         current = self.state["current"]
         wanted = self.state["wanted"]
         for c in ["r","g","b"]:
+            current["color"][c] = self._transform(
+                current["color"][c],
+                wanted["color"][c],
+                wanted["steps"])
             if current["color"][c] != wanted["color"][c]:
-                # Update needed
                 update_needed = True
-                if current["color"][c] < wanted["color"][c]:
-                    current["color"][c] = current["color"][c] + wanted["steps"]
-                    if current["color"][c] > wanted["color"][c]:
-                        current["color"][c] = wanted["color"][c]
 
-                if current["color"][c] > wanted["color"][c]:
-                    current["color"][c] = current["color"][c] - wanted["steps"]
-                    if current["color"][c] < wanted["color"][c]:
-                        current["color"][c] = wanted["color"][c]
-
+        current["brightness"] = self._transform(
+            current["brightness"],
+            wanted["brightness"],
+            wanted["steps"]
+            )
         if current["brightness"] != wanted["brightness"]:
-            # Update needed
             update_needed = True
-            if current["brightness"] < wanted["brightness"]:
-                current["brightness"] = current["brightness"] + wanted["steps"]
-                if current["brightness"] > wanted["brightness"]:
-                    current["brightness"] = wanted["brightness"]
-            if current["brightness"] > wanted["brightness"]:
-                current["brightness"] = current["brightness"] - wanted["steps"]
-                if current["brightness"] < wanted["brightness"]:
-                    current["brightness"] = wanted["brightness"]
 
         if update_needed:
+            pprint.pprint(current["color"])
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColor(i, Color(
                     current["color"]["r"],
