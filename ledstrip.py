@@ -1,6 +1,5 @@
 from repeated_timer import RepeatedTimer
 from neopixel import Adafruit_NeoPixel, Color
-import pprint
 
 class LEDStrip:
     options = {
@@ -117,7 +116,6 @@ class LEDStrip:
             update_needed = True
 
         if update_needed:
-            pprint.pprint(current["color"])
             for i in range(self.strip.numPixels()):
                 self.strip.setPixelColor(i, Color(
                     current["color"]["r"],
